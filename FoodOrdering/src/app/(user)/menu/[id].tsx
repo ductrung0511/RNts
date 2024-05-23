@@ -1,58 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import { Text, View } from '../../../components/Themed'
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router'
-import products from '@/assets/data/products';
 import { Image, Pressable } from 'react-native';
 import { defaultPizzaImage } from '@/src/components/ProductListItem';
 import { StyleSheet } from 'react-native';
 import Button from '@/src/components/Button';
-import { CartItem, PizzaSize, Product } from '@/src/types';
+import {  PizzaSize } from '@/src/types';
 import { useCart } from '@/src/provider/CartProvider';
+import { useProduct } from '@/src/api/products';
+import { ActivityIndicator } from 'react-native-paper';
 
-type ProductListItemProps = {
-  product : Product;
-}
 const sizes: PizzaSize[] = [ 'S', 'M', 'L', 'XL'];
 
 function product() {
   // const  {} = useContext(CartContext);
 
-  const {id} = useLocalSearchParams();
-  const {addItem, items, updateQuantity} = useCart();
+  const {id : idString} = useLocalSearchParams();
+  const id = parseFloat(typeof idString ==='string'? idString: idString[0])
+  const {data: product, error, isLoading} = useProduct(id);
+
+  const {addItem} = useCart();
   const router = useRouter()
   const [selectedSize, setSelectedSize] = useState<PizzaSize>('M')
-  const product = products.find((p) => p.id.toString() === id);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  // useEffect(()=>{
-  //       const fetchData = async () => {
-  //           try {
-  //             const value = await AsyncStorage.getItem('@cart'); // Replace '@storage_Key' with your actual key
-  //             if (value!== null) {
-  //               // Parse the value assuming it's a stringified JSON array
-  //               const parsedItems: CartItem[] = JSON.parse(value);
-  //               setCartItems(parsedItems);
-  //             }
-  //           } catch (error) {
-  //             console.error("Error fetching data:", error);
-  //           }
-  //         };
-  //       fetchData();
-  //   }, [])
-
-
-
-
-  // const addItemToCart = (item: CartItem) => {
-  //   const currentCartItems = useGlobalState().cartItems;
-  //   const newItemId = currentCartItems.length > 0? currentCartItems[currentCartItems.length - 1].id : "1";
-  //   const newItem = {...item, id: newItemId };
-  //   const updatedCartItems = [...currentCartItems, newItem];
-  
-  //   // Update the global state
-  //   const newState = {...useGlobalState(), cartItems: updatedCartItems };
-  //   setState(newState);
-  //   };
-
+  // const product = products.find((p) => p.id.toString() === id);
+ 
   const addToCart = async () => {
     if (!product) return;
     // Find the product in the cartItems array
@@ -88,16 +59,20 @@ function product() {
     //   console.error("Error saving cart to AsyncStorage:", error);
     // }
   };
-  if(!product){
+  
+  if(isLoading){
+    return <ActivityIndicator/>
+  }
+  if(error){
     return(
-      <View> Product not found </View>
+      <Text>error loading products</Text>
     )
   }
 
   return (
     <View style={styles.container}>
       <Stack.Screen  options={{title: 'Details' + id}}/>
-      <Image source={{uri: product.image || defaultPizzaImage}} style={styles.image}/>
+      <Image source={{uri: product.image_url || defaultPizzaImage}} style={styles.image}/>
 
       <Text style={{color: 'black'}}>Select size</Text>
       <View style={styles.sizes}>
@@ -108,9 +83,8 @@ function product() {
         )}
       </View>
 
-      <Text style={styles.price}>${product.price}</Text>
+      <Text style={styles.price}>${product.unit_price}</Text>
       <Button onPress={addToCart} text='Add to cart'/>
-      
     </View>
   )
 }

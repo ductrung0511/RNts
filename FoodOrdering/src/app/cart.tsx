@@ -6,6 +6,7 @@ import { useCart } from '../provider/CartProvider';
 import { FlatList } from 'react-native';
 import CartListItem from '../components/CartListItem';
 import Button from '../components/Button';
+
 export default function ModalScreen() {
     // const [items, setItems] = useState<CartItem[]>([]);
     const {items, total} =  useCart();

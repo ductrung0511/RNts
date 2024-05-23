@@ -4,9 +4,9 @@ import { Text, View } from '@/src/components/Themed';
 import { Image } from 'react-native';
 import Colors from '@/src/constants/Colors';
 import { Product } from '../types';
-import { Link } from 'expo-router';
+import { Link, useSegments } from 'expo-router';
 import { Pressable } from 'react-native';
-
+ 
 export const defaultPizzaImage = 
 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
 
@@ -15,12 +15,14 @@ type ProductListItemProps = {
 }
 
 const ProductListItem = ({product} : ProductListItemProps) =>{
+    const segment  = useSegments();
+    console.log(segment);
     return(
-    <Link href={`/menu/${product.id}`} asChild>
+    <Link href={`/${segment[0]}/menu/${product.id}`} asChild>
       <Pressable style={styles.container}>
-        <Image source={{uri: product.image || defaultPizzaImage}} style={styles.image} />
+        <Image source={{uri: product.image_url || defaultPizzaImage}} style={styles.image} />
         <Text style={styles.title}> {product.name}</Text>
-        <Text style={styles.price}>${product.price}</Text>
+        <Text style={styles.price}>${product.unit_price}</Text>
         
       </Pressable>
     </Link>
@@ -49,7 +51,8 @@ const styles = StyleSheet.create({
     image: {
       width: '100%',
       aspectRatio: 1,
-      resizeMode: 'contain',
+      resizeMode: 'cover',
+      borderRadius: 10,
     },
     
     price: {

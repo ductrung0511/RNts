@@ -9,6 +9,9 @@ import { useColorScheme } from '../components/useColorScheme';
 import { createContext } from 'react';
 import { GlobalStateProvider } from '../provider/GlobalStateProvider';
 import CartProvider from '../provider/CartProvider';
+import AuthProvider from '../provider/AuthProvider';
+import { QueryClient } from '@tanstack/react-query';
+import QueryProvider from '../provider/QueryProvider';
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -53,12 +56,18 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <CartProvider> 
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }}  />
-          <Stack.Screen name="cart" options={{ presentation: 'modal' }} />
-        </Stack>
-      </CartProvider>
+      <AuthProvider>
+      <QueryProvider>
+        <CartProvider> 
+          <Stack>
+            <Stack.Screen name="(user)" options={{ headerShown: false }}  />
+            <Stack.Screen name="(brand)" options={{ headerShown: false }}  />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }}  />
+            <Stack.Screen name="cart" options={{ presentation: 'modal' }} />
+          </Stack>
+        </CartProvider>
+      </QueryProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

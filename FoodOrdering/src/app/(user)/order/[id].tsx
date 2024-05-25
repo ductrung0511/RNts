@@ -3,39 +3,40 @@ import { Text, View } from '../../../components/Themed'
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router'
 import orders from '@/assets/data/orders';
 import { StyleSheet } from 'react-native';
-import { CartItem, PizzaSize, Product } from '@/src/types';
+import { PizzaSize } from '@/src/types';
 import OrderListItem from '@/src/components/OrderListItem';
-import ProductListItem from '@/src/components/ProductListItem';
-import { FlatList } from 'react-native';
-import CartListItem from '@/src/components/CartListItem';
-import OrderItemListItem from '@/src/components/OrderItemListItem';
-type ProductListItemProps = {
-  product : Product;
-}
-const sizes: PizzaSize[] = [ 'S', 'M', 'L', 'XL'];
-
+import { useOrderDetails } from '@/src/api/orders';
+import { ActivityIndicator } from 'react-native-paper';
+import Button from '@/src/components/Button';
 function order() {
   // const  {} = useContext(CartContext);
 
-  const {id} = useLocalSearchParams();
-  const order = orders.find((p) => p.id.toString() === id);
-  console.log(order?.order_items)
-
-  
-  if(!order){
+  const {id : idString} = useLocalSearchParams();
+  const id = parseFloat(typeof idString ==='string'? idString: idString[0])
+  const {data: order, error , isLoading} = useOrderDetails(id)
+  const router = useRouter();
+  function routeBack(){
+    router.push('/(user)/order/')
+  }
+  if(isLoading){
     return(
-      <View> <Text>Order not found</Text> </View>
+      <ActivityIndicator/>
     )
+  }
+  if( error ) {
+    return <Text> Error </Text>
   }
 
   return (
     <View style={styles.container}>
       <Stack.Screen options={{title: `Order #${id}`}} />
-      {/* <Text style={styles.price}>Hello order id {id}</Text> */}
+      <Button  onPress={routeBack} text='back to order'/>
+      <OrderListItem order={order} />
+{/*       
       <FlatList
        data={order?.order_items} renderItem={({item}) => <OrderItemListItem item={item} /> }
        ListHeaderComponent={()=> <OrderListItem order={order} />}
-      />
+      /> */}
 
     </View>
   )

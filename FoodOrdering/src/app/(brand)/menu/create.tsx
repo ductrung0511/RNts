@@ -10,41 +10,42 @@ import { useState } from 'react'
 import { Stack, useRouter } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
 import { Alert } from 'react-native'
-import { useInsertProduct, useProduct, useUpdateProduct } from '@/src/api/products'
+import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from '@/src/api/products'
 import { ScrollView } from 'react-native'
+
 const  CreateProductScreen = () =>  {
     const router = useRouter()
-    const [name, setName] = useState('')
-    const [price, setPrice] = useState('')
-    const [category, setCategory] = useState('')
-    const [brandName, setBrandName] = useState('')
-    const [description, setDescription] = useState('')
+    const [name, setName] = useState<string>('')
+    const [price, setPrice] = useState<string >('')
+    const [category, setCategory] = useState<string >('')
+    const [brandName, setBrandName] = useState<string>('')
+    const [description, setDescription] = useState<string >('')
 
-    const [error, setError] = useState('')
+    const [error, setError] = useState<string | null>('')
     const [image, setImage] = useState<string | null >('');
     const {id : idString} = useLocalSearchParams();
-    const id = parseFloat(typeof idString ==='string'? idString: idString[0])
+    console.log(idString);
+    const id = parseFloat( typeof idString ==='string' ? idString: idString?.[0]);
+    const isUpdating = !!id;
+    // if(isUpdating){}
     const {data: updatingProduct, error: errorFetchProduct} = useProduct(id);
     useEffect(()=>{
-        if(!errorFetchProduct){
-            setName(updatingProduct.name)
-            setPrice(updatingProduct.unit_price.toString())
-            setCategory(updatingProduct.category)
-            setBrandName(updatingProduct?.brand_name)
-            setDescription(updatingProduct?.description)
-
-            console.log(updatingProduct)
+        if(!errorFetchProduct && updatingProduct){
+            setName(updatingProduct.name? updatingProduct.name: '' )
+            setPrice(updatingProduct.unit_price?.toString()? updatingProduct.unit_price.toString() :'')
+            setCategory(updatingProduct.category?  updatingProduct.category : '')
+            setBrandName(updatingProduct.brand_name? updatingProduct.brand_name : '')
+            setDescription(updatingProduct?.description? updatingProduct?.description: '')
+            setImage(updatingProduct.image_url)
         }
-
-
 
     },[updatingProduct])
 
-    console.log(id, 'id of create', !!id)
-    const isUpdating = !!id;
+
 
     const { mutate: insertNewProduct } = useInsertProduct()
     const { mutate: updateProduct } = useUpdateProduct()
+    const {mutate: deleteProduct} = useDeleteProduct()
 
 
     const pickImage = async () => {
@@ -122,17 +123,16 @@ const  CreateProductScreen = () =>  {
                     category: category,
                     brand_name: brandName,
                     description: description, 
-                },
+                } as any,
                 {
                     onSuccess: () => {
                         resetFields();
-                        console.warn( "Updated Prodcut ");
+                        console.warn( "Updated Prodcut");
                         setError('');
                         router.back();
                     },
                     onError: (error) => {
                         console.warn(error)
-
                     }
                     
                 }
@@ -160,6 +160,11 @@ const  CreateProductScreen = () =>  {
     }
     const onDelete = () => {
         console.warn('Delete on going!')
+        deleteProduct(id, {onSuccess: ()=>{
+            setError('');
+            router.replace('/(brand)');
+        }})
+
     }
     return (
     //   <View style={styles.container}>

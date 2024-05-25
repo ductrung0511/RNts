@@ -16,14 +16,14 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: cartItem.product.image || defaultPizzaImage }}
+        source={{ uri: cartItem.product.image_url || defaultPizzaImage }}
         style={styles.image}
         resizeMode="contain"
       />
       <View style={{ flex: 1 }}>
         <Text style={styles.title}>{cartItem.product.name}</Text>
         <View style={styles.subtitleContainer}>
-          <Text style={styles.price}>${cartItem.product.price.toFixed(2)}</Text>
+          <Text style={styles.price}>${cartItem.product.unit_price.toFixed(2)}</Text>
           <Text>Size: {cartItem.size}</Text>
         </View>
       </View>

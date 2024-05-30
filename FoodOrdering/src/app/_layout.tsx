@@ -12,6 +12,7 @@ import CartProvider from '../provider/CartProvider';
 import AuthProvider from '../provider/AuthProvider';
 import { QueryClient } from '@tanstack/react-query';
 import QueryProvider from '../provider/QueryProvider';
+import Colors from '../constants/Colors';
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -60,10 +61,19 @@ function RootLayoutNav() {
       <QueryProvider>
         <CartProvider> 
           <Stack>
+
             <Stack.Screen name="(user)" options={{ headerShown: false }}  />
+            <Stack.Screen name="index" options={{ headerShown: false }}  />
             <Stack.Screen name="(brand)" options={{ headerShown: false }}  />
             <Stack.Screen name="(auth)" options={{ headerShown: false }}  />
-            <Stack.Screen name="cart" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="cart" options={{ presentation: 'modal',
+            headerStyle: { backgroundColor: Colors.light.green},
+            title: 'Giỏ hàng',
+            headerTitleStyle: {
+              fontWeight: 'bold', // Style of the header title
+              color: 'white'
+            },
+             }} />
           </Stack>
         </CartProvider>
       </QueryProvider>

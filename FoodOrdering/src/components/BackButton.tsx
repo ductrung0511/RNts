@@ -1,10 +1,13 @@
 import React from 'react'
 import { TouchableOpacity, Image, StyleSheet } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { useRouter } from 'expo-router';
+
 
 export default function BackButton({  }) {
+  const router = useRouter();
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity onPress={()=>{router.back()}} style={styles.container}>
       <Image
         style={styles.image}
         source={require('@/assets/arrow_back.png')}

@@ -1,23 +1,26 @@
 
 import {  View } from '@/src/components/Themed';
-import orders from '@/assets/data/orders';
+
 import OrderListItem from '@/src/components/OrderListItem';
-import { ActivityIndicator, FlatList } from 'react-native';
+import {  ActivityIndicator, FlatList } from 'react-native';
+
 import { StyleSheet } from 'react-native';
 import dayjs from 'dayjs';
-import {useMyOrderList} from '@/src/api/orders/index';
+import {useBrandOrderList} from '@/src/api/orders/index';
+import orders from '@/assets/data/orders';
+import { Text } from 'react-native';
 
 
 export default function TabOneScreen() {
-  const {data: orders, error, isLoading} = useMyOrderList(  )
+  const {data: orders , error, isLoading} = useBrandOrderList({archived: false})
   if(isLoading){
-    const now = dayjs();
-    return <ActivityIndicator/>
+    return<ActivityIndicator/>
   }
   if(error){
+    console.log(error)
     return<Text>Error fetching orders </Text>
   }
-  // console.log(data.length, data)
+  
   return (
     <View style={styles.background} >
       <FlatList

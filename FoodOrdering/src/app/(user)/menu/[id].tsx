@@ -31,33 +31,6 @@ function product() {
     console.log(product);
     addItem(product, selectedSize);
     router.push('/cart');
-
-    // const existingProductIndex = cartItems.findIndex(p => p.id === product.id);
-
-    // if (existingProductIndex >= 0) {
-    //   // If the product exists in the cart, increment its quantity
-    //   const updatedCartItems = [...cartItems];
-    //   updatedCartItems[existingProductIndex].quantity += 1;
-    //   setCartItems(updatedCartItems);
-    // } else {
-    //   // If the product doesn't exist in the cart, add it
-    //   // setCartItems([...cartItems, {...product, quantity: 1 }]);
-    //   const newCartItem = { id: randomUUID(),
-    //     product: product,
-    //     product_id: product.id,
-    //     size: selectedSized,
-    //     quantity: 1,
-    //   }
-    //   setCartItems(prevCartItems => [...prevCartItems, newCartItem]);
-    // }
-
-    // // Store the updated cart in AsyncStorage
-    // try {
-    //   const cartString = JSON.stringify(cartItems);
-    //   await AsyncStorage.setItem('@cart', cartString);
-    // } catch (error) {
-    //   console.error("Error saving cart to AsyncStorage:", error);
-    // }
   };
   
   if(isLoading){

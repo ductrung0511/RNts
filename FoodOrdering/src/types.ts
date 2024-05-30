@@ -2,7 +2,7 @@ import { Database } from "./database.types";
 
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
 export type InsertTables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert']
-
+import { Tables as DatabaseTables } from "./database.types";
 
 
 export type Product = {
@@ -15,9 +15,11 @@ export type Product = {
   description: string | null;
 };
 
+
+
 export type CartItem = {
   id: string;
-  product: Product;
+  product: DatabaseTables<'products'>;
   product_id: number;
   size: PizzaSize;
   quantity: number;

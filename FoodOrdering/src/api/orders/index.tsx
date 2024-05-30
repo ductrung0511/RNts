@@ -38,32 +38,7 @@ export const useOrderDetails = ( id: number ) =>{
   })
       
 }
-  
 
-export const useBrandOrderList_____ = ({ archived = false }: { archived: boolean }) => {
-  const statuses: OrderStatus[] = archived
-    ? ['Delivered']
-    : ['New', 'Cooking', 'Delivering'];
-  console.warn(
-      'in async warn'
-    )
-  return useQuery<Order[]>({
-    queryKey: ['orders', { archived }],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .in('status', statuses)
-        .order('created_at', { ascending: false });
-      console.log({ data, error });
-      if (error) {
-        console.error('Supabase query error:', error.message);
-        throw new Error(error.message);
-      }
-      return data;
-    },
-  });
-};
 
 export const useMyOrderList = () =>{
   const { session} = useAuth();
@@ -73,7 +48,7 @@ export const useMyOrderList = () =>{
       queryKey: ['orders', {userId: id}],
       queryFn: async () => {
         if(!id) return;
-        const { data, error } = await supabase.from('orders').select('*').eq('customer_id', '4f920f29-2fc7-4c69-87ac-94fa14953802');
+        const { data, error } = await supabase.from('orders').select('*');
         
         if (error) {
           throw new Error(error.message);
@@ -83,17 +58,42 @@ export const useMyOrderList = () =>{
     }))
 }
 
+export const useCreateOrder  = () => {
+  return useMutation({
+    async mutationFn(data: any) {
+
+      let { data: returnData, error } = await supabase
+      .rpc('create_order', 
+        // customer_id, 
+        // product_details, 
+        // store_id_param
+        data
+      )
+      if (error) {
+        console.log(error,'error in orders insert')
+        throw error;
+      }
+      return returnData;
+      
+    },
+    onError(error) {
+      console.log(error);
+    },
+  })
+  
+
+    
+}
+
 export const useInsertOrder = () => {
-  const queryClient = useQueryClient();
-  const {session} = useAuth()
-  const id  = session?.user.id;
 
   return useMutation({
   async mutationFn(data: any) {
+    console.log(data, 'data in to useInsert')
     const { error, data: newOrder } = await supabase.from('orders').insert({
       total_amount: data.total_amount,
-      payment_method : 'cash', // bank transfer, ...
-      customer_id:  '4f920f29-2fc7-4c69-87ac-94fa14953802',//id,
+      payment_method : data.payment_method,
+      customer_id:  data.customer_id,//id,
       store_id: 1, // stored id maybe stored in useContext
       OrderStatus: 'New', //auto new when created
     })
@@ -104,7 +104,7 @@ export const useInsertOrder = () => {
       throw error;
     }
     return newOrder;
-  },
+    },
   // async onSuccess() {
   //   await queryClient.invalidateQueries(['orders',]);
   // },

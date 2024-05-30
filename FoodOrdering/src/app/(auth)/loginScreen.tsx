@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { TouchableOpacity, StyleSheet, View, Image } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../../components/Background'
 import Logo from '../../components/Logo'
@@ -8,7 +8,7 @@ import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import BackButton from '../../components/BackButton'
 import Colors from '../../constants/Colors'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 
 import { emailValidator } from '../../helpers/emailValidator'
 import { passwordValidator } from '../../helpers/passwordValidator'
@@ -19,7 +19,8 @@ export default function LoginScreen({  }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [loading, setLoading] = useState(false)
-
+  const router = useRouter()
+  
   async function loginWithEmail() {
     setLoading(true);
     const {data, error} = await supabase.auth.signInWithPassword({
@@ -53,7 +54,14 @@ export default function LoginScreen({  }) {
   return (
     <Background>
       <BackButton />
-      <Logo />
+      <View style={{alignSelf: 'center'}}>
+        <Image
+        source={{ uri: "https://imgbb.host/images/imagee4c47f4b81ad6f10.png" }}
+        style={styles.image}
+        resizeMode="contain"
+        />
+        <Text style={{fontSize: 40, fontWeight: '800', alignSelf:'center', marginBottom: 20, marginRight: 10}}> E24</Text>
+      </View>
       <Header>Welcome back.</Header>
       <TextInput
         label="Email"
@@ -68,7 +76,7 @@ export default function LoginScreen({  }) {
         keyboardType="email-address"
       />
       <TextInput
-        label="Password"
+        label="Mật khẩu"
         returnKeyType="done"
         value={password.value}
         onChangeText={(text : string) => setPassword({ value: text, error: '' })}
@@ -78,22 +86,22 @@ export default function LoginScreen({  }) {
       />
       <View style={styles.forgotPassword}>
         <TouchableOpacity
-          onPress={() => {} } // navigation.navigate('ResetPasswordScreen')
+          onPress={() => {  router.back(  ) } } // navigation.navigate('ResetPasswordScreen')
         >
-          <Text style={styles.forgot}>Forgot your password?</Text>
+          <Text style={styles.forgot}>Quên mật khẩu?</Text>
         </TouchableOpacity>
       </View>
-      <Button disabled={loading}  onPress={onLoginPressed} text={loading? 'Logging in ...': 'Login'} />
+      <Button disabled={loading}  onPress={onLoginPressed} text={loading? 'Đang đăng nhập...': 'Đăng Nhập'} />
       
       <View style={styles.row}>
-        <Text>Don’t have an account? </Text>
+        <Text> Chưa có tài khoản - </Text>
         {/* <TouchableOpacity onPress={() => { }}
              // navigation.navigate('ResetPasswordScreen')
         >
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity> */}
         <Link href="/(auth)/RegisterScreen" style={styles.link}>
-        Create an account
+        Tạo tài khoản mới
       </Link>
       </View>
     </Background>
@@ -117,5 +125,12 @@ const styles = StyleSheet.create({
   link: {
     fontWeight: 'bold',
     color: Colors.light.tint,
+  },
+  image: {
+    width: 170,
+    aspectRatio: 1,
+    alignSelf: 'center',
+    marginRight: 10,
+    borderRadius: 30,
   },
 })

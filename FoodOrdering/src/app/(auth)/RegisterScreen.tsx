@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../../components/Background'
 import Logo from '../../components/Logo'
@@ -56,20 +56,22 @@ export default function RegisterScreen({  }) {  // navigation
         return;
       }
 
-    // navigation.reset({
-    //   index: 0,
-    //   routes: [{ name: 'Dashboard' }],
-    // })
   }
 
   return (
     <Background>
       <BackButton />  
       {/* goBack={navigation.goBack} */}
-      <Logo />
-      <Header>Create Account</Header>
+      <View style={{alignSelf: 'center'}}>
+        <Image
+        source={{ uri: "https://imgbb.host/images/imagee4c47f4b81ad6f10.png" }}
+        style={styles.image}
+        resizeMode="contain"
+        />
+        <Text style={{fontSize: 40, fontWeight: '800', alignSelf:'center', marginBottom: 20, marginRight: 10}}> E24</Text>
+      </View>
       <TextInput
-        label="Name"
+        label="Tên đăng ký"
         returnKeyType="next"
         value={name.value}
         onChangeText={(text : string) => setName({ value: text, error: '' })}
@@ -89,7 +91,7 @@ export default function RegisterScreen({  }) {  // navigation
         keyboardType="email-address"
       />
       <TextInput
-        label="Password"
+        label="Mật khẩu"
         returnKeyType="done"
         value={password.value}
         onChangeText={(text: string) => setPassword({ value: text, error: '' })}
@@ -101,15 +103,15 @@ export default function RegisterScreen({  }) {  // navigation
         // mode="contained"
         disabled={loading}
         onPress={onSignUpPressed}
-        text={loading ? 'Creating account ...' : 'Create account'}
+        text={loading ? 'Đang tạo tài khoản...' : 'Tạo tài khoản'}
         style={{ marginTop: 24 }}
       />
       
       <View style={styles.row}>
-        <Text>Already have an account? </Text>
+        <Text>Đã có tài khoản </Text>
         <TouchableOpacity onPress={() => {}}> 
          {/* navigation.replace('LoginScreen') */}
-          <Text style={styles.link}>Login</Text>
+          <Text style={styles.link}> Đăng nhập ngay</Text>
         </TouchableOpacity>
       </View>
     </Background>
@@ -124,5 +126,12 @@ const styles = StyleSheet.create({
   link: {
     fontWeight: 'bold',
     color: Colors.light.tint,
+  },
+  image: {
+    width: 170,
+    aspectRatio: 1,
+    alignSelf: 'center',
+    marginRight: 10,
+    borderRadius: 30,
   },
 })

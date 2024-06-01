@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/src/provider/AuthProvider";
 import { Tables } from "@/src/database.types";
 type Order = Tables<'orders'>
+import * as FileSystem from 'expo-file-system';
 
 export const useBrandOrderList = ( { archived = false }: { archived: boolean }) =>{
   console.log(archived, 'archiverd');
@@ -114,3 +115,21 @@ export const useInsertOrder = () => {
 });
   
 }
+
+export const useUploadImage = async (imageBase64) => {
+  try {
+      const { data, error } = await supabase.storage
+          .from('ScannningOCR') // Replace with your storage bucket name
+          .upload('imageFileNamed.jpg' , imageBase64); // Provide a filename and the base64-encoded image data
+      
+      if (error) {
+          throw error;
+      }
+      return data;
+  } catch (error) {
+      console.error('Error uploading image to Supabase:', error.message);
+      throw error;
+  }
+};
+
+// export 

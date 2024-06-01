@@ -53,6 +53,10 @@ const index = () => {
 
         <Button text="Bán hàng ngay thôi!" />
       </Link>
+      <Link href={'/(scan)'} asChild>
+
+        <Button text="Scan shipper" />
+      </Link>
       </>
       }
       {(!loading && !session) &&

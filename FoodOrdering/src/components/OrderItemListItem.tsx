@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import Colors from '../constants/Colors';
-import { OrderItem } from '../types';
+// import { OrderItem } from '../types';
 import { defaultPizzaImage } from './ProductListItem';
+import { Tables } from '../database.types';
 
+type OrderItem = Tables<'orders'>
 type OrderItemListItemProps = {
   item: OrderItem;
 };
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 5,
+    padding: 5, 
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
